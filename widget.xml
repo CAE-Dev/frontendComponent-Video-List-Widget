@@ -92,9 +92,22 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
   <!-- container for actual page content -->
   <div class="container" id="main-content">
-  
-    <CUSTOM id='videoTable'></CUSTOM>
-  
+
+    <div class="scrolltable">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Thumbnail</th>
+            <th>Community</th>
+            <th>Uploader</th>
+            <th class='visible-lg-block'>URL</th>
+          </tr>
+        </thead>
+        <tbody id='videoTable'></tbody>
+      </table>
+    </div>
+
   </div>
 
 </body>

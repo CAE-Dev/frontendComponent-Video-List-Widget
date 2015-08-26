@@ -42,16 +42,13 @@ var init = function() {
   client = new Las2peerWidgetLibrary("http://localhost:8080/videos", iwcCallback);
   
 
-  $('#videoTable').on('click', function() {
-    var videoDetails = null;
-    sendCreateNode(videoDetails);
-  })
+  // event with function call is in "getVideos"
 }
 
 
 // sendCreateNode
 var sendCreateNode = function(videoDetails){
-  var videoDetails = "initialized";
+  var videoDetails = JSON.stringify(videoDetails);
   client.sendIntent("CREATE_NODE", videoDetails);
 }
 
@@ -60,15 +57,40 @@ var sendCreateNode = function(videoDetails){
 var getVideos = function(){
   client.sendRequest("GET", "", "", "", {},
   function(data, type) {
-    console.log(data);
+    // create table rows
+    var videoDetails = [];
+    $.each(data, function(index, value) {
+      videoDetails.push(
+        "<tr><td>" + value.videoId
+        + "</td><td><img src='" + value.thumbnail + "' alt= '"
+        + value.thumbnail
+        + "' style='width:64px;height:64px'></td><td>"
+        + value.community + "</td><td>" + value.uploader
+        + "</td><td class='visible-lg-block'>" + value.url
+        + "</td></tr>"
+      );
+    });
+    // video table update
+    $("#videoTable").html(videoDetails);
+    // make table rows "clickable" (event)
+    $("#videoTable").find("tr").click(function() {
+      var videoDetails = [];
+      // fill array with id, thumbnail and link to video (rest is not
+      // needed for playback)
+      videoDetails[0] = $(this).find("td").get(0).innerHTML; // id
+      videoDetails[1] = $(this).find("img").attr("src"); // thumbnail
+      videoDetails[2] = $(this).find("td").get(4).innerHTML; // videoLink
+      // event function call
+      sendCreateNode(videoDetails);
+    });
   },
   function(error) {
     console.log(error);
   });
-$("#videoTable").html("Upated Element");
 }
 
 
 $(document).ready(function() {
   init();
+  getVideos(); // getVideos call at startup
 });
